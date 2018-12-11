@@ -312,15 +312,26 @@ def get_data_from_t_u_joincourse():
 
 
 def save_txt_to_disk(fileName,para_list):
+    '''
+    :param fileName: 要保存的文本文件名
+    :param para_list: 要保存的list
+    '''
     with open(fileName, "w", encoding="utf-8") as fo:
         fo.write('\n'.join([' '.join(i) for i in para_list]))
 
 
 def sftp_upload_file(server_path, local_path_list):
+    '''
+    :param server_path: linux保存文本文件的路径
+    :param local_path_list: 要上传到linux的文本文件的名称list
+    :return:
+    '''
     try:
         t = paramiko.Transport((linux_hostname, int(linux_port)))
         t.connect(username=linux_username, password=linux_password)
         sftp = paramiko.SFTPClient.from_transport(t)
+        if not os.path.exists(server_path):
+            logger.error("Path "+server_path+" not exists!")
         for file_path in local_path_list:
             linux_file = server_path + file_path
             sftp.put(file_path, linux_file)
@@ -340,24 +351,24 @@ if __name__=="__main__":
     getConn()#数据库连接对象
     current_date = datetime.datetime.now().strftime("%Y-%m-%d") #系统当前日期
     date_common = datetime.datetime.now().strftime("%Y%m%d")
-    categorytab_file = r"categorytab_" + date_common
-    category_file = r"category_" + date_common
-    course_file = r"course_" + date_common
-    subcourse_file = r"subcourse_" + date_common
-    joincourse_file = r"joincourse_" + date_common
-    list_categorytab = get_data_from_t_m_categorytab()
-    save_txt_to_disk(categorytab_file,list_categorytab)
-    list_category = get_data_from_t_m_category()
-    save_txt_to_disk(category_file, list_category)
-    list_course = get_data_from_t_m_course()
-    save_txt_to_disk(course_file,list_course)
-    list_subcourse = get_data_from_t_m_subcourse()
-    save_txt_to_disk(subcourse_file, list_subcourse)
-    list_joincourse = get_data_from_t_u_joincourse()
-    save_txt_to_disk(joincourse_file, list_joincourse)
+    categorytab_file = r"categorytab_" + date_common #设置文件名categorytab_+当前日期
+    category_file = r"category_" + date_common #设置文件名category_+当前日期
+    course_file = r"course_" + date_common #设置文件名course_+当前日期
+    subcourse_file = r"subcourse_" + date_common #设置文件名subcourse_+当前日期
+    joincourse_file = r"joincourse_" + date_common #设置文件名joincourse_+当前日期
+    list_categorytab = get_data_from_t_m_categorytab() #从mysql获取t_m_categorytab数据
+    save_txt_to_disk(categorytab_file,list_categorytab) #保存数据到程序所在的文件夹
+    list_category = get_data_from_t_m_category() #从mysql获取t_m_category数据
+    save_txt_to_disk(category_file, list_category) #保存数据到程序所在的文件夹
+    list_course = get_data_from_t_m_course() #从mysql获取t_m_course数据
+    save_txt_to_disk(course_file,list_course) #保存数据到程序所在的文件夹
+    list_subcourse = get_data_from_t_m_subcourse() #从mysql获取t_m_subcourse数据
+    save_txt_to_disk(subcourse_file, list_subcourse) #保存数据到程序所在的文件夹
+    list_joincourse = get_data_from_t_u_joincourse() #从mysql获取t_u_joincourse数据
+    save_txt_to_disk(joincourse_file, list_joincourse) #保存数据到程序所在的文件夹
     local_file_list = [categorytab_file, category_file, course_file, subcourse_file, joincourse_file]
-    linux_save_path= "/opt/"
-    sftp_upload_file(linux_save_path,local_file_list)
+    linux_save_path= "/opt/" #保存到linux的路径
+    sftp_upload_file(linux_save_path,local_file_list) #从程序所在文件夹上传文本文件到linix中
     closeConn()
     time_end = datetime.datetime.now()
     end = time.clock()
