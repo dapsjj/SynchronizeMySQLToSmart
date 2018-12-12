@@ -31,7 +31,8 @@ def read_dateConfig_file_set_database():
             linux_port = conf.get("linux_port", "linux_port")
             linux_username = conf.get("linux_username", "linux_username")
             linux_password = conf.get("linux_password", "linux_password")
-            return mysql_server, mysql_user, mysql_password, mysql_database, linux_hostname, linux_port, linux_username, linux_password
+            linux_save_path = conf.get("linux_save_path", "linux_save_path")
+            return mysql_server, mysql_user, mysql_password, mysql_database, linux_hostname, linux_port, linux_username, linux_password, linux_save_path
         except Exception as ex:
             logger.error("Content in dateConfig.ini about database has error.")
             logger.error("Exception:" + str(ex))
@@ -108,12 +109,12 @@ def get_data_from_t_m_categorytab():
     try:
         sql = " select " \
             " tabid, "  \
-            " case when length(tabname)=0 then '_' else ifnull(tabname,'_') end  as tabname, " \
+            " case when length(tabname)=0 then '_' else ifnull(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(tabname,'<br>','_'),char(13), '_'),char(10), '_'),char(9), '_'),'　', '_'),' ', '_'),'_') end  as tabname, " \
             " categoryId, " \
             " case when length(creator)=0 then '_' else ifnull(creator,'_') end  as creator, " \
-            " ifnull(DATE_FORMAT(createtime,'%Y%m%d%H%i%s'),'_') as createtime, " \
+            " ifnull(DATE_FORMAT(createtime,'%Y%m%d%H%i%s'),'19000101000000') as createtime, " \
             " case when length(modifier)=0 then '_' else ifnull(modifier,'_') end  as modifier, " \
-            " ifnull(DATE_FORMAT(modifytime,'%Y%m%d%H%i%s'),'_') as modifytime " \
+            " ifnull(DATE_FORMAT(modifytime,'%Y%m%d%H%i%s'),'19000101000000') as modifytime " \
             " from newminicollege.t_m_categorytab "
         cur.execute(sql)
         rows = cur.fetchall()
@@ -143,18 +144,18 @@ def get_data_from_t_m_category():
     '''
     try:
         sql = " select " \
-            " categoryId " \
+            " categoryId, " \
             " companyId, " \
             " ifnull(parentId,0) as parentId, " \
-            " case when length(name)=0 then '_' else ifnull(name,'_') end as name, " \
+            " case when length(name)=0 then '_' else ifnull(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(name,'<br>','_'),char(13), '_'),char(10), '_'),char(9), '_'),'　', '_'),' ', '_'),'_') end as name, " \
             " ifnull(status,0) as status, " \
             " type, " \
             " ifnull(orderNum,0) as orderNum, " \
             " ifnull(sizeflag,0) as sizeflag, " \
             " case when length(creator)=0 then '_' else ifnull(creator,'_') end as creator, " \
-            " ifnull(DATE_FORMAT(createtime,'%Y%m%d%H%i%s'),'_') as createtime, " \
+            " ifnull(DATE_FORMAT(createtime,'%Y%m%d%H%i%s'),'19000101000000') as createtime, " \
             " case when length(modifier)=0 then '_' else ifnull(modifier,'_') end as modifier, " \
-            " ifnull(DATE_FORMAT(modifytime,'%Y%m%d%H%i%s'),'_') as modifytime " \
+            " ifnull(DATE_FORMAT(modifytime,'%Y%m%d%H%i%s'),'19000101000000') as modifytime " \
             " from newminicollege.t_m_category "
         cur.execute(sql)
         rows = cur.fetchall()
@@ -184,16 +185,16 @@ def get_data_from_t_m_course():
     '''
     try:
         sql = " select " \
-            " companyId " \
+            " companyId, " \
             " courseId, " \
-            " case when length(courseName)=0 then '_' else ifnull(courseName,'_') end as courseName, " \
+            " case when length(courseName)=0 then '_' else ifnull(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(courseName,'<br>','_'),char(13), '_'),char(10), '_'),char(9), '_'),'　', '_'),' ', '_'),'_') end as courseName, " \
             " ifnull(courseType,0) as courseType, " \
-            " case when length(courseSee)=0 then '_' else ifnull(courseSee,'_') end as courseSee, " \
+            " case when length(courseSee)=0 then '_' else ifnull(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(courseSee,'<br>','_'),char(13), '_'),char(10), '_'),char(9), '_'),'　', '_'),' ', '_'),'_') end as courseSee, " \
             " ifnull(status,0) as status, " \
             " case when length(creator)=0 then '_' else ifnull(creator,'_') end as creator, " \
-            " ifnull(DATE_FORMAT(createtime,'%Y%m%d%H%i%s'),'_') as createtime, " \
+            " ifnull(DATE_FORMAT(createtime,'%Y%m%d%H%i%s'),'19000101000000') as createtime, " \
             " case when length(modifier)=0 then '_' else ifnull(modifier,'_') end as modifier, " \
-            " ifnull(DATE_FORMAT(modifytime,'%Y%m%d%H%i%s'),'_') as modifytime " \
+            " ifnull(DATE_FORMAT(modifytime,'%Y%m%d%H%i%s'),'19000101000000') as modifytime " \
             " from newminicollege.t_m_course "
         cur.execute(sql)
         rows = cur.fetchall()
@@ -228,11 +229,11 @@ def get_data_from_t_m_subcourse():
             " companyId, " \
             " courseId, " \
             " subCourseId, " \
-            " case when length(subCourseComment)=0 then '_' else ifnull(subCourseComment,'_') end as subCourseComment, " \
-            " case when length(subCourseContent)=0 then '_' else ifnull(subCourseContent,'_') end as subCourseContent, " \
-            " case when length(subCourseName)=0 then '_' else ifnull(subCourseName,'_') end as subCourseName, " \
-            " case when length(subCourseImg)=0 then '_' else ifnull(subCourseImg,'_') end as subCourseImg, " \
-            " case when length(playtime)=0 then '_' else ifnull(playtime,'_') end as playtime, " \
+            " case when length(subCourseComment)=0 then '_' else ifnull(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(subCourseComment,'<br>','_'),char(13), '_'),char(10), '_'),char(9), '_'),'　', '_'),' ', '_'),'_') end as subCourseComment, " \
+            " case when length(subCourseContent)=0 then '_' else ifnull(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(subCourseContent,'<br>','_'),char(13), '_'),char(10), '_'),char(9), '_'),'　', '_'),' ', '_'),'_') end as subCourseContent, " \
+            " case when length(subCourseName)=0 then '_' else ifnull(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(subCourseName,'<br>','_'),char(13), '_'),char(10), '_'),char(9), '_'),'　', '_'),' ', '_'),'_') end as subCourseName, " \
+            " case when length(subCourseImg)=0 then '_' else ifnull(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(subCourseImg,'<br>','_'),char(13), '_'),char(10), '_'),char(9), '_'),'　', '_'),' ', '_'),'_') end as subCourseImg, " \
+            " case when length(playtime)=0 then '_' else ifnull(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(playtime,'<br>','_'),char(13), '_'),char(10), '_'),char(9), '_'),'　', '_'),' ', '_'),'_') end as playtime, " \
             " ifnull(status,0) as status, " \
             " unpublished, " \
             " ipflag, " \
@@ -240,11 +241,11 @@ def get_data_from_t_m_subcourse():
             " ifnull(commendflag,0) as commendflag, " \
             " ifnull(carouselflag,0) as carouselflag, " \
             " showstatus, " \
-            " case when length(tag)=0 then '_' else ifnull(tag,'_') end as tag, " \
+            " case when length(tag)=0 then '_' else ifnull(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(tag,'<br>','_'),char(13), '_'),char(10), '_'),char(9), '_'),'　', '_'),' ', '_'),'_')  end as tag, " \
             " case when length(creator)=0 then '_' else ifnull(creator,'_') end as creator, " \
-            " ifnull(DATE_FORMAT(createtime,'%Y%m%d%H%i%s'),'_') as createtime, " \
+            " ifnull(DATE_FORMAT(createtime,'%Y%m%d%H%i%s'),'19000101000000') as createtime, " \
             " case when length(modifier)=0 then '_' else ifnull(modifier,'_') end as modifier, " \
-            " ifnull(DATE_FORMAT(modifytime,'%Y%m%d%H%i%s'),'_') as modifytime " \
+            " ifnull(DATE_FORMAT(modifytime,'%Y%m%d%H%i%s'),'19000101000000') as modifytime " \
             " from newminicollege.t_m_subcourse "
         cur.execute(sql)
         rows = cur.fetchall()
@@ -275,17 +276,17 @@ def get_data_from_t_u_joincourse():
     try:
         sql = " select " \
             " companyId, " \
-            " case when length(joinCourseId)=0 then '_' else ifnull(joinCourseId,'_') end as joinCourseId, " \
+            " case when length(joinCourseId)=0 then '_' else ifnull(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(joinCourseId,'<br>','_'),char(13), '_'),char(10), '_'),char(9), '_'),'　', '_'),' ', '_'),'_') end as joinCourseId, " \
             " joinSubCourseId, " \
-            " case when length(userCd)=0 then '_' else ifnull(userCd,'_') end as userCd, " \
+            " case when length(userCd)=0 then '_' else ifnull(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(userCd,'<br>','_'),char(13), '_'),char(10), '_'),char(9), '_'),'　', '_'),' ', '_'),'_') end as userCd, " \
             " ifnull(joinCnt,0) as joinCnt, " \
             " ifnull(learnTime,0) as learnTime, " \
             " ifnull(status,0) as status, " \
             " case when length(url)=0 then '_' else ifnull(url,'_') end as url, " \
             " case when length(creator)=0 then '_' else ifnull(creator,'_') end as creator, " \
-            " ifnull(DATE_FORMAT(createtime,'%Y%m%d%H%i%s'),'_') as createtime, " \
+            " ifnull(DATE_FORMAT(createtime,'%Y%m%d%H%i%s'),'19000101000000') as createtime, " \
             " case when length(modifier)=0 then '_' else ifnull(modifier,'_') end as modifier, " \
-            " ifnull(DATE_FORMAT(modifytime,'%Y%m%d%H%i%s'),'_') as modifytime " \
+            " ifnull(DATE_FORMAT(modifytime,'%Y%m%d%H%i%s'),'19000101000000') as modifytime " \
             " from newminicollege.t_u_joincourse " \
             " where DATE_FORMAT(createtime,'%Y%m%d') = DATE_FORMAT(date_sub(curdate(),interval 1 day),'%Y%m%d') " \
             " or DATE_FORMAT(modifytime,'%Y%m%d') = DATE_FORMAT(date_sub(curdate(),interval 1 day),'%Y%m%d') "
@@ -317,6 +318,11 @@ def save_txt_to_disk(fileName,para_list):
     :param para_list: 要保存的list
     '''
     with open(fileName, "w", encoding="utf-8") as fo:
+        # para_list = [i[:-1] + [""] if i[-1] == 'None' else i for i in para_list]
+        # for row in para_list:
+        #     list1 = [(item + " ") for item in row]
+        #     fo.writelines(list1)
+        #     fo.write('\n')
         fo.write('\n'.join([' '.join(i) for i in para_list]))
 
 
@@ -332,6 +338,7 @@ def sftp_upload_file(server_path, local_path_list):
         sftp = paramiko.SFTPClient.from_transport(t)
         if not os.path.exists(server_path):
             logger.error("Path "+server_path+" not exists!")
+            # return
         for file_path in local_path_list:
             linux_file = server_path + file_path
             sftp.put(file_path, linux_file)
@@ -347,7 +354,7 @@ if __name__=="__main__":
     time_start = datetime.datetime.now()
     start = time.clock()
     logger.info("Program start,now time is:"+str(time_start))
-    mysql_server, mysql_user, mysql_password, mysql_database, linux_hostname, linux_port, linux_username, linux_password = read_dateConfig_file_set_database()#读取配置文件中的数据库信息
+    mysql_server, mysql_user, mysql_password, mysql_database, linux_hostname, linux_port, linux_username, linux_password, linux_save_path = read_dateConfig_file_set_database()#读取配置文件中的数据库信息
     getConn()#数据库连接对象
     current_date = datetime.datetime.now().strftime("%Y-%m-%d") #系统当前日期
     date_common = datetime.datetime.now().strftime("%Y%m%d")
@@ -367,7 +374,6 @@ if __name__=="__main__":
     list_joincourse = get_data_from_t_u_joincourse() #从mysql获取t_u_joincourse数据
     save_txt_to_disk(joincourse_file, list_joincourse) #保存数据到程序所在的文件夹
     local_file_list = [categorytab_file, category_file, course_file, subcourse_file, joincourse_file]
-    linux_save_path= "/opt/" #保存到linux的路径
     sftp_upload_file(linux_save_path,local_file_list) #从程序所在文件夹上传文本文件到linix中
     closeConn()
     time_end = datetime.datetime.now()
