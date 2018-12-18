@@ -169,7 +169,7 @@ def get_data_from_mysql_table(para_list):
         logger.error("dbException:" + str(ex))
         raise ex
     except Exception as ex:
-        logger.error("Call method get_data_from_t_m_categorytab() error!")
+        logger.error("Call method get_data_from_mysql_table() error!")
         logger.error("Exception:" + str(ex))
         raise ex
 
@@ -177,14 +177,14 @@ def get_data_from_mysql_table(para_list):
 if __name__=="__main__":
     logger = write_log()  # 获取日志对象
     time_start = datetime.datetime.now()
-    start = time.clock()
+    start = time.time()
     logger.info("Program start,now time is:"+str(time_start))
     current_date = datetime.datetime.now().strftime("%Y-%m-%d") #系统当前日期
     date_common = datetime.datetime.now().strftime("%Y%m%d")
     mysql_linux_config_list = read_txtConfig_file() #读文本配置文件
-    mysql_data_wtite_to_linux(mysql_linux_config_list)
+    mysql_data_wtite_to_linux(mysql_linux_config_list) #写文件到Linux
     time_end = datetime.datetime.now()
-    end = time.clock()
+    end = time.time()
     logger.info("Program end,now time is:"+str(time_end))
     logger.info("Program run : %f seconds" % (end - start))
 
