@@ -77,7 +77,7 @@ def read_txtConfig_file():
     '''
     txt_config_list = []
     try:
-        with open('/TORASINNYOU/TBL/LIST.DISTRI.DAYMS.MYSQLGET.TORASINNYOU', 'r', encoding='utf-8') as txtConfig:
+        with open('config', 'r', encoding='utf-8') as txtConfig:
             lines = txtConfig.readlines()
             for line in lines:
                 line = line.strip()
@@ -130,7 +130,7 @@ def save_txt_to_disk(para_config,para_list):
         file_name = para_config[5]
         if not os.path.exists(file_path):
             os.makedirs(file_path)
-        with open(file_path + file_name , "w", encoding="utf-8") as fo:
+        with open(file_path + file_name + "_" + date_common, "w", encoding="utf-8") as fo:
             fo.write('\n'.join([' '.join(i) for i in para_list]))
     except Exception as ex:
         logger.error("Call method save_txt_to_disk() error!")
