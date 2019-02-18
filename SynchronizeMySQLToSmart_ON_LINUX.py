@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import pymysql
 import datetime
@@ -114,7 +115,8 @@ def mysql_data_wtite_to_linux(config_list):
         if config_list:
             for config in config_list:
                 list_write_to_linux = get_data_from_mysql_table(config)
-                save_txt_to_disk(config,list_write_to_linux)
+                if list_write_to_linux: #有数据则保存文本
+                    save_txt_to_disk(config,list_write_to_linux)
     except Exception as ex:
         logger.error("Call method mysql_data_wtite_to_linux() error!")
         raise ex
