@@ -78,15 +78,16 @@ def read_txtConfig_file():
     '''
     txt_config_list = []
     try:
-        with open('config', 'r', encoding='utf-8') as txtConfig:
+        with open(r'./MYSQLGET', 'r', encoding='utf-8') as txtConfig:
             lines = txtConfig.readlines()
             for line in lines:
                 line = line.strip()
                 if not line: #如果line是空
                     continue
                 else:
-                    row_list = line.split(" ")
-                    txt_config_list.append(row_list)
+                    if line.find('#')==-1:#不是'#'开头的行
+                        row_list = line.split(" ")
+                        txt_config_list.append(row_list)
             return txt_config_list
     except Exception as ex:
         logger.error("Call method read_txtConfig_file() error!")
