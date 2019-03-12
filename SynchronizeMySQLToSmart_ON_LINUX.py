@@ -6,6 +6,7 @@ import datetime
 import time
 import logging
 import os
+import sys
 
 conn = None  # 连接
 cur = None  # 游标
@@ -72,13 +73,15 @@ def closeConn():
             conn.close()
 
 
-def read_txtConfig_file():
+def read_txtConfig_file(paraFile):
     '''
     读配置文件
     '''
+
     txt_config_list = []
     try:
-        with open(r'./MYSQLGET', 'r', encoding='utf-8') as txtConfig:
+        with open(r'/TORASINNYOU/TBL/LIST.DISTRI.DAYMS.MYSQLGET.TORASINNYOU', 'r', encoding='utf-8') as txtConfig:
+        # with open(r'LIST.DISTRI.DAYMS.MYSQLGET.TORASINNYOU', 'r', encoding='utf-8') as txtConfig:
             lines = txtConfig.readlines()
             for line in lines:
                 line = line.strip()
@@ -88,7 +91,11 @@ def read_txtConfig_file():
                     if line.find('#')==-1:#不是'#'开头的行
                         row_list = line.split(" ")
                         txt_config_list.append(row_list)
-            return txt_config_list
+            fileList = [x[5] for x in txt_config_list]
+            findIndex = fileList.index(paraFile)
+            thisFileList = txt_config_list[findIndex]
+            return thisFileList
+
     except Exception as ex:
         logger.error("Call method read_txtConfig_file() error!")
         raise ex
@@ -114,10 +121,9 @@ def mysql_data_wtite_to_linux(config_list):
     '''
     try:
         if config_list:
-            for config in config_list:
-                list_write_to_linux = get_data_from_mysql_table(config)
-                if list_write_to_linux: #有数据则保存文本
-                    save_txt_to_disk(config,list_write_to_linux)
+            list_write_to_linux = get_data_from_mysql_table(config_list)
+            # if list_write_to_linux: #有数据则保存文本
+            save_txt_to_disk(config_list,list_write_to_linux)
     except Exception as ex:
         logger.error("Call method mysql_data_wtite_to_linux() error!")
         raise ex
@@ -180,9 +186,11 @@ if __name__=="__main__":
     time_start = datetime.datetime.now()
     start = time.time()
     logger.info("Program start,now time is:"+str(time_start))
-    current_date = datetime.datetime.now().strftime("%Y-%m-%d") #系统当前日期
-    date_common = datetime.datetime.now().strftime("%Y%m%d")
-    mysql_linux_config_list = read_txtConfig_file() #读文本配置文件
+    len_args = len(sys.argv)
+    if len_args<2: #判断参数个数
+        os._exit(1)
+    logger.info("Generate file:" + sys.argv[1])
+    mysql_linux_config_list = read_txtConfig_file(sys.argv[1]) #读文本配置文件
     mysql_data_wtite_to_linux(mysql_linux_config_list) #写文件到Linux
     time_end = datetime.datetime.now()
     end = time.time()
