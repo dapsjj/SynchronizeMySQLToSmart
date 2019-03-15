@@ -11,12 +11,8 @@ import sys
 conn = None  # 连接
 cur = None  # 游标
 
-
+'''
 def write_log():
-    '''
-    写log
-    :return: 返回logger对象
-    '''
     # 获取logger实例，如果参数为空则返回root logger
     logger = logging.getLogger()
     now_date = datetime.datetime.now().strftime('%Y%m%d')
@@ -32,6 +28,7 @@ def write_log():
     # 指定日志的最低输出级别，默认为WARN级别
     logger.setLevel(logging.INFO)
     return logger
+'''
 
 
 def getConn(mysql_server, mysql_user, mysql_password, mysql_database):
@@ -44,10 +41,10 @@ def getConn(mysql_server, mysql_user, mysql_password, mysql_database):
         conn = pymysql.connect(mysql_server, mysql_user, mysql_password, mysql_database)
         cur = conn.cursor()
     except pymysql.Error as ex:
-        logger.error("dbException:" + str(ex))
+        # logger.error("dbException:" + str(ex))
         raise ex
     except Exception as ex:
-        logger.error("Call method getConn() error!")
+        # logger.error("Call method getConn() error!")
         raise ex
 
 
@@ -62,10 +59,10 @@ def closeConn():
             cur.close()
             conn.close()
     except pymysql.Error as ex:
-        logger.error("dbException:" + str(ex))
+        # logger.error("dbException:" + str(ex))
         raise ex
     except Exception as ex:
-        logger.error("Call method closeConn() error!")
+        # logger.error("Call method closeConn() error!")
         raise ex
     finally:
         if conn.open:
@@ -81,7 +78,6 @@ def read_txtConfig_file(paraFile):
     txt_config_list = []
     try:
         with open(r'/TORASINNYOU/TBL/LIST.DISTRI.DAYMS.MYSQLGET.TORASINNYOU', 'r', encoding='utf-8') as txtConfig:
-        # with open(r'LIST.DISTRI.DAYMS.MYSQLGET.TORASINNYOU', 'r', encoding='utf-8') as txtConfig:
             lines = txtConfig.readlines()
             for line in lines:
                 line = line.strip()
@@ -97,7 +93,7 @@ def read_txtConfig_file(paraFile):
             return thisFileList
 
     except Exception as ex:
-        logger.error("Call method read_txtConfig_file() error!")
+        # logger.error("Call method read_txtConfig_file() error!")
         raise ex
 
 
@@ -111,7 +107,7 @@ def read_mysql_select(file_name):
             sql_data = f.read()
             return sql_data
     except Exception as ex:
-        logger.error("Call method read_mysql_select() error!")
+        # logger.error("Call method read_mysql_select() error!")
         raise ex
 
 
@@ -125,7 +121,7 @@ def mysql_data_wtite_to_linux(config_list):
             # if list_write_to_linux: #有数据则保存文本
             save_txt_to_disk(config_list,list_write_to_linux)
     except Exception as ex:
-        logger.error("Call method mysql_data_wtite_to_linux() error!")
+        # logger.error("Call method mysql_data_wtite_to_linux() error!")
         raise ex
 
 
@@ -142,7 +138,7 @@ def save_txt_to_disk(para_config,para_list):
         with open(file_path + file_name, "w", encoding="utf-8") as fo:
             fo.write('\n'.join([' '.join(i) for i in para_list]))
     except Exception as ex:
-        logger.error("Call method save_txt_to_disk() error!")
+        # logger.error("Call method save_txt_to_disk() error!")
         raise ex
 
 
@@ -173,29 +169,29 @@ def get_data_from_mysql_table(para_list):
         else:
             return ""
     except pymysql.Error as ex:
-        logger.error("dbException:" + str(ex))
+        # logger.error("dbException:" + str(ex))
         raise ex
     except Exception as ex:
-        logger.error("Call method get_data_from_mysql_table() error!")
-        logger.error("Exception:" + str(ex))
+        # logger.error("Call method get_data_from_mysql_table() error!")
+        # logger.error("Exception:" + str(ex))
         raise ex
 
 
 if __name__=="__main__":
-    logger = write_log()  # 获取日志对象
+    # logger = write_log()  # 获取日志对象
     time_start = datetime.datetime.now()
     start = time.time()
-    logger.info("Program start,now time is:"+str(time_start))
+    # logger.info("Program start,now time is:"+str(time_start))
     len_args = len(sys.argv)
     if len_args<2: #判断参数个数
         os._exit(1)
-    logger.info("Generate file:" + sys.argv[1])
+    # logger.info("Generate file:" + sys.argv[1])
     mysql_linux_config_list = read_txtConfig_file(sys.argv[1]) #读文本配置文件
     mysql_data_wtite_to_linux(mysql_linux_config_list) #写文件到Linux
     time_end = datetime.datetime.now()
     end = time.time()
-    logger.info("Program end,now time is:"+str(time_end))
-    logger.info("Program run : %f seconds" % (end - start))
+    # logger.info("Program end,now time is:"+str(time_end))
+    # logger.info("Program run : %f seconds" % (end - start))
 
 
 
